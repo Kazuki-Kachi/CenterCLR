@@ -1,6 +1,8 @@
 ﻿Imports System.Globalization
 Imports System.Runtime.CompilerServices
 Imports System.Console
+Imports CenterCLR
+
 Partial Module Program
     Private Class Point
         ReadOnly Property X As Integer
@@ -60,17 +62,17 @@ World")
         WriteLine($"Old:{todayOnOldVersion}{vbCrLf}New:{today}")
     End Sub
 
-    Private Sub IntroduceTypeofIsNot(arg As Object)
-        If TypeOf arg IsNot String Then WriteLine(arg?.ToString())
-        WriteLine(NameOf(System.String))
-    End Sub
-
     Private Sub IntroduceNullConditionalOperators(p As Point)
         Dim s = p?.ToString()
         WriteLine(If(s, "Null"))
 
         Dim x = p?.X
         WriteLine(If(x.HasValue, x.ToString(), "Null"))
+    End Sub
+
+    Private Sub IntroduceTypeofIsNot(arg As Object)
+        If TypeOf arg IsNot String Then WriteLine(arg?.ToString())
+        WriteLine(NameOf(System.String))
     End Sub
 
     <Sample(CObj(""), DataByInt32:=0)>
@@ -90,4 +92,12 @@ World")
         Public Property DataByInt32 As Integer
     End Class
 
+    Class Hoge
+        Implements IEquatable(Of Hoge)
+
+        Public Function Equals(other As Hoge) As Boolean Implements IEquatable(Of Hoge).Equals
+            Throw New NotImplementedException()
+        End Function
+
+    End Class
 End Module
