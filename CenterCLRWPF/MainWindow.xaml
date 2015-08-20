@@ -5,8 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CenterCLRWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="188.551" Width="339.894" FontSize="18.667">
+    <Window.DataContext>
+        <local:ViewModel/>
+    </Window.DataContext>
+
     <Grid>
-        
+        <Label  Content="姓：" HorizontalAlignment="Left" Width="30" Height="25" VerticalAlignment="Top" Margin="0,8,0,0" FontSize="12"/>
+        <TextBox Margin="35,5,0,0" HorizontalAlignment="Left" Width="180" Text="{Binding Path=FamilyName, UpdateSourceTrigger=PropertyChanged}" Height="32" VerticalAlignment="Top"></TextBox>
+        <Label  Content="名：" HorizontalAlignment="Left" Width="30" Height="25" VerticalAlignment="Top" Margin="0,53,0,0" FontSize="12"/>
+        <TextBox Margin="35,50,0,0" HorizontalAlignment="Left" Width="180" Text="{Binding Path=Name, UpdateSourceTrigger=PropertyChanged}" Height="32" VerticalAlignment="Top"></TextBox>
+        <TextBlock Margin="35,97,0,0" Height="25" VerticalAlignment="Top" HorizontalAlignment="Left" Width="247" Text="{Binding Path=FullName,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
     </Grid>
 </Window>
