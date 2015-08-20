@@ -95,9 +95,5 @@ World")
     Class Hoge
         Implements IEquatable(Of Hoge)
 
-        Public Function Equals(other As Hoge) As Boolean Implements IEquatable(Of Hoge).Equals
-            Throw New NotImplementedException()
-        End Function
-
     End Class
 End Module
