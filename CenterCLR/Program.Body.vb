@@ -7,7 +7,6 @@ Partial Module Program
     Private Class Point
         ReadOnly Property X As Integer
         ReadOnly Property Y As Integer
-        ReadOnly Property Name As String = NameOf(Point)
         Sub New(x As Integer, y As Integer)
             Me.X = x
             Me.Y = y
@@ -24,6 +23,13 @@ Partial Module Program
         WriteLine($"{NameOf(DateTime.Now)}")
         WriteLine($"{NameOf(DateTime)}")
         WriteLine($"{NameOf(Date.Today)}")
+#Region "実際にはこう展開される"
+        WriteLine(String.Format("{0}:{1}", "arg", arg))
+        WriteLine("おまけ")
+        WriteLine(String.Format("{0}", "Now"))
+        WriteLine(String.Format("{0}", "DateTime"))
+        WriteLine(String.Format("{0}", "Today"))
+#End Region
         'WriteLine($"{NameOf(Date)}") これはBuild error
 
     End Sub
@@ -46,7 +52,6 @@ Partial Module Program
         Console.WriteLine("Hello
 World")
     End Sub
-
 
     Private Sub CommentsAfterImplicitLineContinuation()
         Dim result = From i In Enumerable.Range(1, 10) '１~１０までの数
@@ -92,8 +97,4 @@ World")
         Public Property DataByInt32 As Integer
     End Class
 
-    Class Hoge
-        Implements IEquatable(Of Hoge)
-
-    End Class
 End Module
