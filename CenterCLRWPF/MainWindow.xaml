@@ -10,7 +10,7 @@
         <local:ViewModel/>
     </Window.DataContext>
 
-    <Grid>
+    <Grid Margin="10">
         <Label  Content="姓：" HorizontalAlignment="Left" Width="30" Height="25" VerticalAlignment="Top" Margin="0,8,0,0" FontSize="12"/>
         <TextBox Margin="35,5,0,0" HorizontalAlignment="Left" Width="180" Text="{Binding Path=FamilyName, UpdateSourceTrigger=PropertyChanged}" Height="32" VerticalAlignment="Top"></TextBox>
         <Label  Content="名：" HorizontalAlignment="Left" Width="30" Height="25" VerticalAlignment="Top" Margin="0,53,0,0" FontSize="12"/>
