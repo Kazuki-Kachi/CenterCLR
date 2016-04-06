@@ -1,0 +1,36 @@
+﻿<Window x:Class="RPDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RPDemo"
+        xmlns:vm="clr-namespace:RPDemo.ViewModels" 
+        mc:Ignorable="d"
+        Title="MainWindow" Height="84.63" Width="679.451" FontFamily="RiiPopkaku" FontSize="18.667">
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160*"/>
+            <ColumnDefinition Width="60*"/>
+            <ColumnDefinition Width="160*"/>
+            <ColumnDefinition Width="40*"/>
+            <ColumnDefinition Width="251*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox Margin="9" Grid.Column="0" TextAlignment="Right" Text="{Binding Path=LeftSideValue ,UpdateSourceTrigger=PropertyChanged}"/>
+        <ComboBox Margin="9" Grid.Column="1" ItemsSource="{Binding List}" FontSize="16" SelectedItem="{Binding Path=SelectedItem , Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" >
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock TextAlignment="Center" Text="{Binding Operator}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <TextBox Margin="9" Grid.Column="2" TextAlignment="Right" Text="{Binding Path=RightSideValue ,UpdateSourceTrigger=PropertyChanged}"/>
+        <Label Margin="9" Content="=" Grid.Column="3" />
+        <Label Margin="9" Grid.Column="4" Content="{Binding Path=Answer,Mode=OneWay ,UpdateSourceTrigger=PropertyChanged}" />
+    </Grid>
+</Window>

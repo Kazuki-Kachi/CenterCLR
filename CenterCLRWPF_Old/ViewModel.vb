@@ -1,5 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
+Imports System.Linq.Expressions
+Imports System.IO
 
 Public Class ViewModel
     Implements INotifyPropertyChanged
@@ -13,9 +15,8 @@ Public Class ViewModel
             If _familyName = value Then Return
             _familyName = value
             RaisePropertyChanged()
-            RaisePropertyChanged(NameOf(FullName))
+            RaisePropertyChanged("FullName")
         End Set
-
     End Property
 
     Private _name As String
@@ -27,13 +28,16 @@ Public Class ViewModel
             If _name = value Then Return
             _name = value
             RaisePropertyChanged()
-            RaisePropertyChanged(NameOf(FullName))
+
+            '手抜きです
+            Dim f As Expression(Of Func(Of String)) = Function() FullName
+            RaisePropertyChanged(CType(f.Body, MemberExpression).Member.Name)
         End Set
     End Property
 
     ReadOnly Property FullName As String
         Get
-            Return $"{FamilyName}　{Name}"
+            Return String.Concat(FamilyName, "　", Name)
         End Get
     End Property
 

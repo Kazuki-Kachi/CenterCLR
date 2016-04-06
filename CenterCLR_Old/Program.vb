@@ -21,13 +21,4 @@
         End Property
         Public Property DataByInt32 As Integer
     End Class
-
-    Class Hoge
-        Implements IEquatable(Of Hoge)
-
-        Public Function Equals(other As Hoge) As Boolean Implements IEquatable(Of Hoge).Equals
-
-        End Function
-    End Class
-
 End Module

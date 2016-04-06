@@ -5,19 +5,29 @@ Imports CenterCLR
 
 Partial Module Program
     Private Class Point
+        Private _x As Integer
         ReadOnly Property X As Integer
+            Get
+                Return _x
+            End Get
+        End Property
         ReadOnly Property Y As Integer
+        ReadOnly Property Hoge As String = "Foo"
+
         Sub New(x As Integer, y As Integer)
-            Me.X = x
+            Me._x = x
             Me.Y = y
         End Sub
-        Public Overrides Function ToString() As String
+        Overrides Function ToString() As String
             Return $"X:{X},Y:{Y}"
         End Function
     End Class
 
     Private Sub IntroduceNameOf(Optional arg As String = Nothing)
-        If arg Is Nothing Then Throw New ArgumentNullException(NameOf(arg))
+        If arg Is Nothing Then
+            Throw New ArgumentNullException(NameOf(arg))
+        End If
+
         WriteLine($"{NameOf(arg)}:{arg}")
         WriteLine("おまけ")
         WriteLine($"{NameOf(DateTime.Now)}")
@@ -30,7 +40,8 @@ Partial Module Program
         WriteLine(String.Format("{0}", "DateTime"))
         WriteLine(String.Format("{0}", "Today"))
 #End Region
-        'WriteLine($"{NameOf(Date)}") これはBuild error
+        'WriteLine($"{NameOf(Date)}") これはBuild Error
+        Dim s = NameOf(System.String)
 
     End Sub
     Private Sub IntroduceStringInterpolation()
@@ -39,18 +50,18 @@ Partial Module Program
 
         With New Object()
             Dim format1 As IFormattable = $"{1000:C}"
+            Dim ci = CultureInfo.GetCultureInfo("en-us")
 #Region "実際にはこう展開される(変数名は変えてます)"
             Dim format2 As IFormattable = FormattableStringFactory.Create("{0:C}", 1000)
 #End Region
             WriteLine(format1.ToString(Nothing, CultureInfo.GetCultureInfo("en-us")))
             WriteLine(format2.ToString(Nothing, CultureInfo.GetCultureInfo("en-us")))
         End With
-
     End Sub
 
     Private Sub IntroduceMultilineStringLiterals()
         Console.WriteLine("Hello
-World")
+　　　　　　　　　　　　　　　World")
     End Sub
 
     Private Sub CommentsAfterImplicitLineContinuation()
@@ -62,17 +73,22 @@ World")
     End Sub
 
     Private Sub IntroduceYearFirstDateLiterals()
-        Dim today = #2015-08-29#
-        Dim todayOnOldVersion = #08-29-2015#
+        Dim today = #2015-08-29# '年は1000以上でないとBuild error
+        Dim todayOnOldVersion = #08-29-2015# '年は100以上でないとBuild error
         WriteLine($"Old:{todayOnOldVersion}{vbCrLf}New:{today}")
     End Sub
 
-    Private Sub IntroduceNullConditionalOperators(p As Point)
+    Private Sub IntroduceNullConditionalOperators(
+                               ps As IReadOnlyList(Of Point),
+                               Optional act As Action = Nothing)
+        Dim p = ps?(0) 'これはIndexer
+
         Dim s = p?.ToString()
         WriteLine(If(s, "Null"))
-
         Dim x = p?.X
         WriteLine(If(x.HasValue, x.ToString(), "Null"))
+
+        act?.Invoke()　'delegateの場合はInvoke()を使用する
     End Sub
 
     Private Sub IntroduceTypeofIsNot(arg As Object)

@@ -5,6 +5,9 @@ Imports CenterCLR.Extensions
 Module Program
 
     Sub Main()
+        Dim d = #1-1-100#
+        Dim d2 = #1000-1-1#
+        WriteLine()
 #Region "変数宣言"
         Dim s = ""
         Dim i = 0
