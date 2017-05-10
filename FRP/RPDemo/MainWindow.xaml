@@ -4,12 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RPDemo"
+        xmlns:converters="clr-namespace:RPDemo.Converters"
         xmlns:vm="clr-namespace:RPDemo.ViewModels" 
         mc:Ignorable="d"
         Title="MainWindow" Height="84.63" Width="679.451" FontFamily="RiiPopkaku" FontSize="18.667">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
+    <Window.Resources>
+        <converters:NullableDecimalConverter x:Key="NullableDecimal"/>
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -19,7 +23,7 @@
             <ColumnDefinition Width="40*"/>
             <ColumnDefinition Width="251*"/>
         </Grid.ColumnDefinitions>
-        <TextBox Margin="9" Grid.Column="0" TextAlignment="Right" Text="{Binding Path=LeftSideValue ,UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Margin="9" Grid.Column="0" TextAlignment="Right" Text="{Binding Path=LeftSideValue ,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource NullableDecimal}}"/>
         <ComboBox Margin="9" Grid.Column="1" ItemsSource="{Binding List}" FontSize="16" SelectedItem="{Binding Path=SelectedItem , Mode=OneWayToSource,UpdateSourceTrigger=PropertyChanged}" >
             <ComboBox.ItemTemplate>
                 <DataTemplate>
@@ -29,7 +33,7 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <TextBox Margin="9" Grid.Column="2" TextAlignment="Right" Text="{Binding Path=RightSideValue ,UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Margin="9" Grid.Column="2" TextAlignment="Right" Text="{Binding Path=RightSideValue ,UpdateSourceTrigger=PropertyChanged,Converter={StaticResource NullableDecimal}}"/>
         <Label Margin="9" Content="=" Grid.Column="3" />
         <Label Margin="9" Grid.Column="4" Content="{Binding Path=Answer,Mode=OneWay ,UpdateSourceTrigger=PropertyChanged}" />
     </Grid>

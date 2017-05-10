@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,14 +12,11 @@ namespace RPDemo.ViewModels
     {
         internal class ListItem
         {
-            public ListItem() : this(null,null) { }
-            public ListItem(string ope , Func<int?,int?,int?> formula)
-            {
-                Operator = ope ?? "";
-                Formula = formula ?? ((x,y) => null);
-            }
+            public ListItem() : this(null, null) { }
+            public ListItem(string ope, Func<decimal?, decimal?, decimal?> formula) => (Operator, Formula) = (ope ?? "", formula ?? ((x, y) => null));
+
             public string Operator { get; }
-            public Func<int?,int?,int?> Formula { get; }
+            public Func<decimal?, decimal?, decimal?> Formula { get; }
         }
 
         public IReadOnlyList<ListItem> List { get; } =
@@ -30,58 +28,49 @@ namespace RPDemo.ViewModels
                 new ListItem("÷", (l, r) => r.HasValue && r == 0 ? null : l / r)
             };
 
-        int? _LeftSideValue;
-        public int? LeftSideValue
+        decimal? _LeftSideValue;
+        public decimal? LeftSideValue
         {
-            get
-            {
-                return _LeftSideValue;
-            }
+            get => _LeftSideValue;
             set
             {
                 if(_LeftSideValue == value) return;
                 _LeftSideValue = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LeftSideValue)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Answer)));
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Answer));
             }
         }
 
-        int? _RightSideValue;
-        public int? RightSideValue
+        decimal? _RightSideValue;
+        public decimal? RightSideValue
         {
-            get
-            {
-                return _RightSideValue;
-            }
+            get => _RightSideValue;
             set
             {
                 if(_RightSideValue == value) return;
                 _RightSideValue = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RightSideValue)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Answer)));
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Answer));
             }
         }
 
         ListItem _SelectedItem;
         public ListItem SelectedItem {
-            get
-            {
-                return _SelectedItem;
-            }
+            get => _SelectedItem;
             set
             {
                 if(ReferenceEquals(_SelectedItem, value) || _SelectedItem?.Operator == value?.Operator) return;
                 _SelectedItem = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedItem)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Answer)));
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(Answer));
 
             }
         }
-
         public string Answer => (_SelectedItem?.Formula?.Invoke(LeftSideValue, RightSideValue))?.ToString() ?? "未定義";
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
+        void RaisePropertyChanged([CallerMemberName] string name = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         #endregion
     }
 }
