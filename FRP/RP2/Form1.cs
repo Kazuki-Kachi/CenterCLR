@@ -12,11 +12,21 @@ using System.Threading;
 using System.Reactive.Disposables;
 using RP2.Extensions;
 using System.Diagnostics;
+using static RP2.Form1;
 
 namespace RP2
 {
     public partial class Form1 : Form
     {
+        [Flags]
+       internal enum Mode
+        {
+            None = 0b0,
+            Up = 0b10,
+            Down = 0b100,
+            Left = 0b1000,
+            Right = 0b10000
+        }
         public Form1()
         {
             InitializeComponent();
@@ -51,7 +61,7 @@ namespace RP2
                 {
                     if(points.IsEmpty()) return;
 
-                    points.Zip(points.Skip(1), (p1, p2) => new Point(p1.X - p2.X, p1.Y - p2.Y)).Where(p => !p.IsEmpty).ForEach(p => Debug.WriteLine(p));
+                    points.Zip(points.Skip(1), (p1, p2) => new Point(p1.X - p2.X, p1.Y - p2.Y).ToMode()).Where(p => p != Mode.None).ForEach(p => Debug.WriteLine(p));
                     points.Clear();
                 });
 
@@ -109,6 +119,17 @@ namespace RP2
     {
         internal static class ControlExtensions
         {
+            internal static Mode ToMode(this Point point)
+            {
+                var r = Mode.None;
+                if(point.X > 0) r |= Mode.Right;
+                if(point.X < 0) r |= Mode.Left;
+                if(point.Y > 0) r |= Mode.Down;
+                if(point.Y < 0) r |= Mode.Up;
+
+                return r;
+            }
+
 
             internal static bool IsEmpty<T>(this IEnumerable<T> source) => source?.All(_ => false) ?? true;
             internal static void ForEach<T>(this IEnumerable<T> source,Action<T> act)
