@@ -11,6 +11,7 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Reactive.Disposables;
 using RP2.Extensions;
+using System.Diagnostics;
 
 namespace RP2
 {
@@ -27,7 +28,7 @@ namespace RP2
                 new ListItem("÷", (l, r) => r.HasValue && r == 0 ? null : l / r)
             });
         }
-
+        List<Point> points = new List<Point>();
         protected override void OnHandleCreated(EventArgs ev)
         {
             base.OnHandleCreated(ev);
@@ -42,40 +43,50 @@ namespace RP2
 
             down.SelectMany(move.TakeUntil(up))
                 .ObserveOn(this)
-                .Subscribe(e => label2.Text = e.Location.ToString());
+                .Subscribe(e => points.Add(e.Location));
 
-            Observable
-                .Timer(TimeSpan.Zero, TimeSpan.FromMilliseconds(250))
-                .Select(_ => $"{DateTime.Now:yyyy年MM月dd日(ddd) HH:mm:ss}")
-                .DistinctUntilChanged()
-                .ObserveOn(this)
-                .Subscribe(d => label1.Text = d);
-
-            var upClick = button1.MouseClickAsObservable()
+            button3.MouseClickAsObservable()
                 .Where(e => e.Button == MouseButtons.Left)
-                .Select((_, i) => 1);
+                .Subscribe(e =>
+                {
+                    if(points.IsEmpty()) return;
 
-            var downClick = button2.MouseClickAsObservable()
-                .Where(e => e.Button == MouseButtons.Left)
-                .Select((_, i) => -1);
+                    points.Zip(points.Skip(1), (p1, p2) => new Point(p1.X - p2.X, p1.Y - p2.Y)).Where(p => !p.IsEmpty).ForEach(p => Debug.WriteLine(p));
+                    points.Clear();
+                });
 
-            upClick
-                .Merge(downClick)
-                .Scan(0, (acc, current) => acc + current)
-                .ObserveOn(this)
-                .Subscribe(i => label3.Text = i.ToString());
+            //Observable
+            //    .Timer(TimeSpan.Zero, TimeSpan.FromMilliseconds(250))
+            //    .Select(_ => $"{DateTime.Now:yyyy年MM月dd日(ddd) HH:mm:ss}")
+            //    .DistinctUntilChanged()
+            //    .ObserveOn(this)
+            //    .Subscribe(d => label1.Text = d);
 
-            void setAnswer(EventArgs e) =>
-                lbAnswer.Text = (cbOperator.SelectedItem as ListItem)?.
-                Formula?.Invoke(decimal.TryParse(tbLeft.Text, out var left) ? left 
-                : default(decimal?), decimal.TryParse(tbRight.Text, out var right) ? right : default(decimal?))?.ToString() ?? "未定義";
+            //var upClick = button1.MouseClickAsObservable()
+            //    .Where(e => e.Button == MouseButtons.Left)
+            //    .Select((_, i) => 1);
 
-            Observable
-                .Merge(
-                    tbLeft.TextChangedAsObservable(),
-                    tbRight.TextChangedAsObservable(),
-                    cbOperator.SelectedIndexChangedAsObservable()).ObserveOn(this)
-                .Subscribe(setAnswer);
+            //var downClick = button2.MouseClickAsObservable()
+            //    .Where(e => e.Button == MouseButtons.Left)
+            //    .Select((_, i) => -1);
+
+            //upClick
+            //    .Merge(downClick)
+            //    .Scan(0, (acc, current) => acc + current)
+            //    .ObserveOn(this)
+            //    .Subscribe(i => label3.Text = i.ToString());
+
+            //void setAnswer(EventArgs e) =>
+            //    lbAnswer.Text = (cbOperator.SelectedItem as ListItem)?.
+            //    Formula?.Invoke(decimal.TryParse(tbLeft.Text, out var left) ? left 
+            //    : default(decimal?), decimal.TryParse(tbRight.Text, out var right) ? right : default(decimal?))?.ToString() ?? "未定義";
+
+            //Observable
+            //    .Merge(
+            //        tbLeft.TextChangedAsObservable(),
+            //        tbRight.TextChangedAsObservable(),
+            //        cbOperator.SelectedIndexChangedAsObservable()).ObserveOn(this)
+            //    .Subscribe(setAnswer);
 
 
         }
@@ -98,6 +109,17 @@ namespace RP2
     {
         internal static class ControlExtensions
         {
+
+            internal static bool IsEmpty<T>(this IEnumerable<T> source) => source?.All(_ => false) ?? true;
+            internal static void ForEach<T>(this IEnumerable<T> source,Action<T> act)
+            {
+                if(source == null) throw new ArgumentNullException(nameof(source));
+                if(act == null) throw new ArgumentNullException(nameof(act));
+
+                foreach(var item in source) act(item);
+
+            }
+
             internal static IObservable<MouseEventArgs> MouseDownAsObservable(this Control ctl) => ctl == null
                 ? throw new ArgumentNullException(nameof(ctl))
                 : Observable
